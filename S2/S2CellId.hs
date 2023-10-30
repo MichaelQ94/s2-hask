@@ -58,6 +58,7 @@ just like the output of toHexStr.
 -}
 fromHexStr :: String -> Maybe S2CellId
 fromHexStr ('0':'x':s) = fromHexStrImpl 0 15 s
+fromHexStr _ = Nothing
 
 -- Implementation details
 
