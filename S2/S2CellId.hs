@@ -8,7 +8,7 @@ module S2.S2CellId
   fromToken,
   toToken
 ) where
-import Data.Bits (Bits(setBit, testBit))
+import Data.Bits (Bits((.&.), complement, setBit, shiftR, testBit))
 import Data.Word (Word64)
 import Data.Char (digitToInt, intToDigit, isHexDigit)
 import Data.Maybe
@@ -46,6 +46,15 @@ discrete point, it is better to use the S2Cell class.
 
 newtype S2CellId = S2CellId Word64
 
+numFaces :: () -> Int
+numFaces () = 6
+
+maxCellLevel :: () -> Int
+maxCellLevel () = 30
+
+posBits :: () -> Int
+posBits () = 2 * maxCellLevel () + 1
+
 -- | The 64-bit unique identifier for this cell.
 id :: S2CellId -> Word64
 id (S2CellId rawId) = rawId
@@ -61,9 +70,17 @@ indexes.
 sentinel :: () -> S2CellId
 sentinel () = S2CellId 0xFFFFFFFFFFFFFFFF
 
--- | Returns true if the result of `id` represents a valid cell.
+{-|
+Returns true if the result of `id` represents a valid cell. All functions taking S2CellIds as input
+require `isValid` to be True unless otherwise specified.
+-}
+
 isValid :: S2CellId -> Bool
-isValid _ = False
+isValid cellId = (face cellId < numFaces ()) && (lsb cellId .&. 0x1555555555555555 > 0)
+
+-- | Which cube face this cell belongs to, in the range 0..5.
+face :: S2CellId -> Int
+face = fromIntegral . flip shiftR (posBits ()) . S2.S2CellId.id
 
 {-|
 Returns the string @0x{id[7]}...{id[0]}@ where @id[7]@ is the most significant digit in the
@@ -81,6 +98,15 @@ just like the output of `toToken`. Returns @none ()@ for malformed inputs. @`fro
 fromToken :: String -> S2CellId
 fromToken ('0':'x':s) = fromTokenImpl (Just 0) s 16
 fromToken _ = none ()
+
+{-|
+Return the lowest-numbered bit that is on for this cell id, which is
+equal to @(uint64{1} << (2 * (kMaxLevel - level)))@.  So for example,
+@a.lsb() <= b.lsb()@ if and only if @a.level() >= b.level()@, but the
+first test is more efficient.
+-}
+lsb :: S2CellId -> Word64
+lsb cellId = rawId .&. (complement rawId + 1) where rawId = S2.S2CellId.id cellId
 
 -- Implementation details
 
