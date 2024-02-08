@@ -1,6 +1,6 @@
 module S2.S2CellId
 (
-  S2CellId,
+  S2CellId(..),
   S2.S2CellId.id,
   none,
   sentinel,
@@ -79,7 +79,7 @@ just like the output of `toToken`. Returns @none ()@ for malformed inputs. @`fro
 (`toToken` x) == x@ even if @x@ is invalid.
 -}
 fromToken :: String -> S2CellId
-fromToken ('0':'x':s) = fromTokenImpl (Just 0) s 15
+fromToken ('0':'x':s) = fromTokenImpl (Just 0) s 16
 fromToken _ = none ()
 
 -- Implementation details
