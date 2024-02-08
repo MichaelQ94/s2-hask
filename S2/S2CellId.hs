@@ -5,8 +5,10 @@ module S2.S2CellId
   none,
   sentinel,
   isValid,
+  face,
   fromToken,
-  toToken
+  toToken,
+  lsb
 ) where
 import Data.Bits (Bits((.&.), complement, setBit, shiftR, testBit))
 import Data.Char (digitToInt, intToDigit, isHexDigit)
