@@ -1,12 +1,16 @@
 module S2.S2CellId
 (
   S2CellId,
-  fromHexStr,
-  toHexStr
+  S2.S2CellId.id,
+  none,
+  sentinel,
+  isValid,
+  fromToken,
+  toToken
 ) where
 import Data.Bits (Bits(setBit, testBit))
-import qualified Data.Word
-import Data.Char (digitToInt, intToDigit)
+import Data.Word (Word64)
+import Data.Char (digitToInt, intToDigit, isHexDigit)
 import Data.Maybe
 
 {-
@@ -38,43 +42,62 @@ Leaf cells are often used to represent points on the unit sphere, and
 this class provides methods for converting directly between these two
 representations.  For cells that represent 2D regions rather than
 discrete point, it is better to use the S2Cell class.
-
-This class is intended to be copied by value as desired.  It uses
-the default copy constructor and assignment operator.
 -}
 
-type S2CellId = Data.Word.Word64
+newtype S2CellId = S2CellId Word64
 
-{-
-Returns the string "0x{id[7]}...{id[0]}" where {id[7]} is the most significant digit
-in the hexadecmial representation of {id}, id[6] is the next lowest place value, etc.
+-- | The 64-bit unique identifier for this cell.
+id :: S2CellId -> Word64
+id (S2CellId rawId) = rawId
+
+-- | Returns an invalid cell id.
+none :: () -> S2CellId
+none () = S2CellId 0
+
+{-|
+Returns an invalid S2CellId guaranteed to be larger than any valid cell id. Useful for creating
+indexes.
 -}
-toHexStr :: S2CellId -> String
-toHexStr id = "0x" ++ toHexStrImpl 0 63 id
+sentinel :: () -> S2CellId
+sentinel () = S2CellId 0xFFFFFFFFFFFFFFFF
 
-{-
+-- | Returns true if the result of `id` represents a valid cell.
+isValid :: S2CellId -> Bool
+isValid _ = False
+
+{-|
+Returns the string @0x{id[7]}...{id[0]}@ where @id[7]@ is the most significant digit in the
+hexadecmial representation of `S2CellId.id`, @id[6]@ is the next lowest place value, etc.
+@`fromToken` (`toToken` x) == x@ even if @x@ is invalid.
+-}
+toToken :: S2CellId -> String
+toToken cellId = "0x" ++ toTokenImpl (S2.S2CellId.id cellId) 63 0
+
+{-|
 Decodes an S2CellId from a string representation which is expected to be formatted
-just like the output of toHexStr.
+just like the output of `toToken`. Returns @none ()@ for malformed inputs. @`fromToken`
+(`toToken` x) == x@ even if @x@ is invalid.
 -}
-fromHexStr :: String -> Maybe S2CellId
-fromHexStr ('0':'x':s) = fromHexStrImpl 0 15 s
-fromHexStr _ = Nothing
+fromToken :: String -> S2CellId
+fromToken ('0':'x':s) = fromTokenImpl (Just 0) s 15
+fromToken _ = none ()
 
 -- Implementation details
 
-toHexStrImpl :: Int -> Int -> S2CellId -> [Char]
-toHexStrImpl c i id
+toTokenImpl :: Word64 -> Int -> Int -> String
+toTokenImpl rawId i c
   | i == 0 = [intToDigit c']
-  | r == 0 = intToDigit c' : toHexStrImpl 0 (i-1) id
-  | otherwise = toHexStrImpl c' (i-1) id
+  | r == 0 = intToDigit c' : toTokenImpl rawId (i-1) 0
+  | otherwise = toTokenImpl rawId (i-1) c'
   where r = i `mod` 4
-        c' = if testBit id i then setBit c r else c
+        c' = if testBit rawId i then setBit c r else c
 
-fromHexStrImpl :: S2CellId -> Int -> String -> Maybe S2CellId
-fromHexStrImpl _ 0 (c:d:ds) = Nothing
-fromHexStrImpl id 0 [c] = Just (shiftAndAppend id c)
-fromHexStrImpl id i (c:cs) = fromHexStrImpl (shiftAndAppend id c) (i-1) cs
-fromHexStrImpl _ _ [] = Nothing
+fromTokenImpl :: Maybe Word64 -> String -> Int -> S2CellId
+fromTokenImpl Nothing _ _ = none ()
+fromTokenImpl _ (x:xs) 0 = none ()
+fromTokenImpl (Just rawId) [] 0 = S2CellId rawId
+fromTokenImpl _ [] _ = none ()
+fromTokenImpl (Just rawId) (c:cs) i = fromTokenImpl (shiftAndAppend rawId c) cs (i-1)
 
-shiftAndAppend :: S2CellId -> Char -> S2CellId
-shiftAndAppend id c = id * 16 + toEnum (digitToInt c)
+shiftAndAppend :: Word64 -> Char -> Maybe Word64
+shiftAndAppend rawId c = if isHexDigit c then Just (rawId * 16 + toEnum (digitToInt c)) else Nothing
