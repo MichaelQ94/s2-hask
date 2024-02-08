@@ -44,7 +44,7 @@ this class provides methods for converting directly between these two
 representations.  For cells that represent 2D regions rather than
 discrete point, it is better to use the S2Cell class.
 -}
-newtype S2CellId = S2CellId Word64
+newtype S2CellId = S2CellId Word64 deriving (Eq, Ord)
 
 numFaces :: () -> Int
 numFaces () = 6
