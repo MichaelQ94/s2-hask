@@ -30,7 +30,7 @@ test_fromToken_sentinel_upper = do
 test_fromToken_sentinel_lower = do
   assertRawIdEquals 0xFFFFFFFFFFFFFFFF (S2CellId.fromToken "0xffffffffffffffff")
 
-test_toTokenToken_none = do
+test_toToken_none = do
   assertEqual "0x0000000000000000" (S2CellId.toToken . S2CellId.none $ ())
 
 test_toToken_sentinel = do
