@@ -5,7 +5,6 @@ import Data.Word (Word64)
 import S2.S2CellId
 import qualified S2.S2CellId as S2CellId
 import Test.Framework
-import Data.Bool (Bool)
 
 prop_id :: Word64 -> Bool
 prop_id rawId = (S2CellId.id . S2CellId $ rawId) == rawId

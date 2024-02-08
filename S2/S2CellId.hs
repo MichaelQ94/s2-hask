@@ -9,9 +9,8 @@ module S2.S2CellId
   toToken
 ) where
 import Data.Bits (Bits((.&.), complement, setBit, shiftR, testBit))
-import Data.Word (Word64)
 import Data.Char (digitToInt, intToDigit, isHexDigit)
-import Data.Maybe
+import Data.Word (Word64)
 
 {-
 An S2CellId is a 64-bit unsigned integer that uniquely identifies a
