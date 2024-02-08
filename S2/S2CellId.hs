@@ -42,7 +42,6 @@ this class provides methods for converting directly between these two
 representations.  For cells that represent 2D regions rather than
 discrete point, it is better to use the S2Cell class.
 -}
-
 newtype S2CellId = S2CellId Word64
 
 numFaces :: () -> Int
@@ -73,7 +72,6 @@ sentinel () = S2CellId 0xFFFFFFFFFFFFFFFF
 Returns true if the result of `id` represents a valid cell. All functions taking S2CellIds as input
 require `isValid` to be True unless otherwise specified.
 -}
-
 isValid :: S2CellId -> Bool
 isValid cellId = (face cellId < numFaces ()) && (lsb cellId .&. 0x1555555555555555 > 0)
 
@@ -118,9 +116,9 @@ toTokenImpl rawId i c
         c' = if testBit rawId i then setBit c r else c
 
 fromTokenImpl :: Maybe Word64 -> String -> Int -> S2CellId
+fromTokenImpl (Just rawId) [] 0 = S2CellId rawId
 fromTokenImpl Nothing _ _ = none ()
 fromTokenImpl _ (x:xs) 0 = none ()
-fromTokenImpl (Just rawId) [] 0 = S2CellId rawId
 fromTokenImpl _ [] _ = none ()
 fromTokenImpl (Just rawId) (c:cs) i = fromTokenImpl (shiftAndAppend rawId c) cs (i-1)
 
