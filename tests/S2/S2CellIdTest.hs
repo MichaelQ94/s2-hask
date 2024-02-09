@@ -23,15 +23,10 @@ test_isValid_sentinel = do
 
 test_parentChildRelationships = do
   let parentId = S2CellId 0x1555555555555550
-  -- TODO: "loop" this
-  assertEqual parentId (parent . child 0 $ parentId)
-  assertEqual parentId (parent . child 1 $ parentId)
-  assertEqual parentId (parent . child 2 $ parentId)
-  assertEqual parentId (parent . child 3 $ parentId)
-  assertEqual (parent parentId) (parentAtLevel (level parentId - 1) (parent . child 0 $ parentId))
-  assertEqual (parent parentId) (parentAtLevel (level parentId - 1) (parent . child 1 $ parentId))
-  assertEqual (parent parentId) (parentAtLevel (level parentId - 1) (parent . child 2 $ parentId))
-  assertEqual (parent parentId) (parentAtLevel (level parentId - 1) (parent . child 3 $ parentId))
+  let parentLevel = level parentId
+  forEachChild parentId (assertEqual parentId . parent)
+  -- TODO: "loop" over all parent levels, not just the immediate grandparent
+  forEachChild parentId (assertEqual (parent parentId) . parentAtLevel (parentLevel - 1))
 
 test_fromToken_none = do
   assertRawIdEquals 0 (fromToken "0x0000000000000000")
@@ -53,5 +48,12 @@ prop_fromToken_toToken rawId = (S2CellId.id . fromToken . toToken . S2CellId $ r
 
 assertRawIdEquals :: Word64 -> S2CellId -> IO ()
 assertRawIdEquals expectedRawId cellId = assertEqual expectedRawId (S2CellId.id cellId)
+
+forEachChild :: S2CellId -> (S2CellId -> IO ()) -> IO ()
+forEachChild cellId f = do
+  f (child 0 cellId)
+  f (child 1 cellId)
+  f (child 2 cellId)
+  f (child 3 cellId)
 
 main = htfMain htf_thisModulesTests
