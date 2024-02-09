@@ -1,20 +1,28 @@
 module S2.S2CellId
-(
-  S2CellId(..),
-  S2.S2CellId.id,
-  none,
-  sentinel,
-  isValid,
-  face,
-  fromToken,
-  toToken,
-  lsb
-) where
-import Data.Bits (Bits((.&.), complement, setBit, shiftR, testBit))
+  ( S2CellId (..),
+    S2.S2CellId.id,
+    none,
+    sentinel,
+    isValid,
+    face,
+    level,
+    parent,
+    parentAtLevel,
+    child,
+    fromToken,
+    toToken,
+    lsb,
+    lsbForLevel
+  )
+where
+
+import Data.Bits (
+  Bits (complement, setBit, shiftL, shiftR, testBit, (.&.), (.|.)),
+  FiniteBits (countTrailingZeros))
 import Data.Char (digitToInt, intToDigit, isHexDigit)
 import Data.Word (Word64)
 
-{-
+{-|
 An S2CellId is a 64-bit unsigned integer that uniquely identifies a
 cell in the S2 cell decomposition.  It has the following format:
 
@@ -44,7 +52,7 @@ this class provides methods for converting directly between these two
 representations.  For cells that represent 2D regions rather than
 discrete point, it is better to use the S2Cell class.
 -}
-newtype S2CellId = S2CellId Word64 deriving (Eq, Ord)
+newtype S2CellId = S2CellId Word64 deriving (Eq, Ord, Show)
 
 numFaces :: () -> Int
 numFaces () = 6
@@ -79,7 +87,35 @@ isValid cellId = (face cellId < numFaces ()) && (lsb cellId .&. 0x15555555555555
 
 -- | Which cube face this cell belongs to, in the range 0..5.
 face :: S2CellId -> Int
-face = fromIntegral . flip shiftR (posBits ()) . S2.S2CellId.id
+face (S2CellId rawId) = fromIntegral (shiftR rawId (posBits ()))
+
+-- | Return the subdivision level of this cell (range 0..maxLevel)
+level :: S2CellId -> Int
+level (S2CellId rawId) = maxLevel () - (countTrailingZeros rawId `div` 2)
+
+-- | Return the cell at the previous level.
+parent :: S2CellId -> S2CellId
+parent (S2CellId rawId) = S2CellId ((rawId .&. (complement newLsb + 1)) .|. newLsb)
+  where newLsb = shiftL (lsb (S2CellId rawId)) 2
+
+-- | Return the cell at the given level (which must be less than or equal to the current level).
+parentAtLevel :: Int -> S2CellId -> S2CellId
+parentAtLevel level (S2CellId rawId) = S2CellId ((rawId .&. (complement newLsb + 1)) .|. newLsb)
+  where newLsb = lsbForLevel level
+
+{-|
+Return the immediate child of this cell at the given traversal order position (in the range 0 to 3).
+This cell must not be a leaf cell.
+-}
+child :: Int -> S2CellId -> S2CellId
+{-
+To change the level, we need to move the least-significant bit two
+positions downward.  We do this by subtracting (4 * new_lsb) and adding
+new_lsb.  Then to advance to the given child cell, we add
+(2 * position * new_lsb).
+-}
+child position (S2CellId rawId) =
+  S2CellId (rawId + fromIntegral (2 * position + 1 - 4) * shiftR (lsb (S2CellId rawId)) 2)
 
 {-|
 Returns the string @0x{id[7]}...{id[0]}@ where @id[7]@ is the most significant digit in the
@@ -95,7 +131,7 @@ just like the output of `toToken`. Returns @none ()@ for malformed inputs. @`fro
 (`toToken` x) == x@ even if @x@ is invalid.
 -}
 fromToken :: String -> S2CellId
-fromToken ('0':'x':s) = fromTokenImpl (Just 0) s 16
+fromToken ('0' : 'x' : s) = fromTokenImpl (Just 0) s 16
 fromToken _ = none ()
 
 {-|
@@ -105,24 +141,29 @@ equal to @(uint64{1} << (2 * (kMaxLevel - level)))@.  So for example,
 first test is more efficient.
 -}
 lsb :: S2CellId -> Word64
-lsb cellId = rawId .&. (complement rawId + 1) where rawId = S2.S2CellId.id cellId
+lsb (S2CellId rawId) = rawId .&. (complement rawId + 1)
+
+-- | Return the lowest-numbered bit that is on for cells at the given level.
+lsbForLevel :: Int -> Word64
+lsbForLevel level = shiftL 1 (2 * (maxLevel() - level))
 
 -- Implementation details
 
 toTokenImpl :: Word64 -> Int -> Int -> String
 toTokenImpl rawId i c
   | i == 0 = [intToDigit c']
-  | r == 0 = intToDigit c' : toTokenImpl rawId (i-1) 0
-  | otherwise = toTokenImpl rawId (i-1) c'
-  where r = i `mod` 4
-        c' = if testBit rawId i then setBit c r else c
+  | r == 0 = intToDigit c' : toTokenImpl rawId (i - 1) 0
+  | otherwise = toTokenImpl rawId (i - 1) c'
+  where
+    r = i `mod` 4
+    c' = if testBit rawId i then setBit c r else c
 
 fromTokenImpl :: Maybe Word64 -> String -> Int -> S2CellId
 fromTokenImpl (Just rawId) [] 0 = S2CellId rawId
 fromTokenImpl Nothing _ _ = none ()
-fromTokenImpl _ (x:xs) 0 = none ()
+fromTokenImpl _ (x : xs) 0 = none ()
 fromTokenImpl _ [] _ = none ()
-fromTokenImpl (Just rawId) (c:cs) i = fromTokenImpl (shiftAndAppend rawId c) cs (i-1)
+fromTokenImpl (Just rawId) (c : cs) i = fromTokenImpl (shiftAndAppend rawId c) cs (i - 1)
 
 shiftAndAppend :: Word64 -> Char -> Maybe Word64
 shiftAndAppend rawId c = if isHexDigit c then Just (rawId * 16 + toEnum (digitToInt c)) else Nothing
