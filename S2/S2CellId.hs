@@ -49,11 +49,11 @@ newtype S2CellId = S2CellId Word64 deriving (Eq, Ord)
 numFaces :: () -> Int
 numFaces () = 6
 
-maxCellLevel :: () -> Int
-maxCellLevel () = 30
+maxLevel :: () -> Int
+maxLevel () = 30
 
 posBits :: () -> Int
-posBits () = 2 * maxCellLevel () + 1
+posBits () = 2 * maxLevel () + 1
 
 -- | The 64-bit unique identifier for this cell.
 id :: S2CellId -> Word64
