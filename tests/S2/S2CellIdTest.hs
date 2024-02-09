@@ -9,17 +9,13 @@ import Test.Framework
 prop_id :: Word64 -> Bool
 prop_id rawId = (S2CellId.id . S2CellId $ rawId) == rawId
 
-test_none = do
-  assertRawIdEquals 0 (none ())
+test_none = assertRawIdEquals 0 (none ())
 
-test_sentinel = do
-  assertRawIdEquals 0xFFFFFFFFFFFFFFFF (sentinel ())
+test_sentinel = assertRawIdEquals 0xFFFFFFFFFFFFFFFF (sentinel ())
 
-test_isValid_none = do
-  assertEqual False (isValid . none $ ())
+test_isValid_none = assertEqual False (isValid . none $ ())
 
-test_isValid_sentinel = do
-  assertEqual False (isValid . sentinel $ ())
+test_isValid_sentinel = assertEqual False (isValid . sentinel $ ())
 
 test_parentChildRelationships = do
   let parentId = S2CellId 0x1555555555555550
@@ -28,20 +24,17 @@ test_parentChildRelationships = do
   -- TODO: "loop" over all parent levels, not just the immediate grandparent
   forEachChild parentId (assertEqual (parent parentId) . parentAtLevel (parentLevel - 1))
 
-test_fromToken_none = do
-  assertRawIdEquals 0 (fromToken "0x0000000000000000")
+test_fromToken_none = assertRawIdEquals 0 (fromToken "0x0000000000000000")
 
-test_fromToken_sentinel_upper = do
+test_fromToken_sentinel_upper =
   assertRawIdEquals 0xFFFFFFFFFFFFFFFF (fromToken "0xFFFFFFFFFFFFFFFF")
 
-test_fromToken_sentinel_lower = do
+test_fromToken_sentinel_lower =
   assertRawIdEquals 0xFFFFFFFFFFFFFFFF (fromToken "0xffffffffffffffff")
 
-test_toToken_none = do
-  assertEqual "0x0000000000000000" (toToken . none $ ())
+test_toToken_none = assertEqual "0x0000000000000000" (toToken . none $ ())
 
-test_toToken_sentinel = do
-  assertEqual "0xffffffffffffffff" (toToken . sentinel $ ())
+test_toToken_sentinel = assertEqual "0xffffffffffffffff" (toToken . sentinel $ ())
 
 prop_fromToken_toToken :: Word64 -> Bool
 prop_fromToken_toToken rawId = (S2CellId.id . fromToken . toToken . S2CellId $ rawId) == rawId
