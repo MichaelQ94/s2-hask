@@ -123,7 +123,7 @@ hexadecmial representation of `S2CellId.id`, @id[6]@ is the next lowest place va
 @`fromToken` (`toToken` x) == x@ even if @x@ is invalid.
 -}
 toToken :: S2CellId -> String
-toToken cellId = "0x" ++ toTokenImpl (S2.S2CellId.id cellId) 63 0
+toToken cellId = reverse (toTokenImpl (S2.S2CellId.id cellId) 63 0 "x0")
 
 {-|
 Decodes an S2CellId from a string representation which is expected to be formatted
@@ -145,15 +145,15 @@ lsb (S2CellId rawId) = rawId .&. (complement rawId + 1)
 
 -- | Return the lowest-numbered bit that is on for cells at the given level.
 lsbForLevel :: Int -> Word64
-lsbForLevel level = shiftL 1 (2 * (maxLevel() - level))
+lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
 
 -- Implementation details
 
-toTokenImpl :: Word64 -> Int -> Int -> String
-toTokenImpl rawId i c
-  | i == 0 = [intToDigit c']
-  | r == 0 = intToDigit c' : toTokenImpl rawId (i - 1) 0
-  | otherwise = toTokenImpl rawId (i - 1) c'
+toTokenImpl :: Word64 -> Int -> Int -> String -> String
+toTokenImpl rawId i c acc
+  | i == 0 = intToDigit c' : acc
+  | r == 0 = toTokenImpl rawId (i - 1) 0 (intToDigit c' : acc)
+  | otherwise = toTokenImpl rawId (i - 1) c' acc
   where
     r = i `mod` 4
     c' = if testBit rawId i then setBit c r else c
