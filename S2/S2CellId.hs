@@ -121,7 +121,7 @@ child position (S2CellId rawId) =
 -- hexadecmial representation of `S2CellId.id`, @id[6]@ is the next lowest place value, etc.
 -- @`fromToken` (`toToken` x) == x@ even if @x@ is invalid.
 toToken :: S2CellId -> String
-toToken cellId = reverse (toTokenImpl (S2.S2CellId.id cellId) 63 0 "x0")
+toToken cellId = "0x" ++ toTokenImpl (S2.S2CellId.id cellId) 0 0 ""
 
 -- |
 -- Decodes an S2CellId from a string representation which is expected to be formatted
@@ -147,9 +147,9 @@ lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
 
 toTokenImpl :: Word64 -> Int -> Int -> String -> String
 toTokenImpl rawId i c acc
-  | i == 0 = intToDigit c' : acc
-  | r == 0 = toTokenImpl rawId (i - 1) 0 (intToDigit c' : acc)
-  | otherwise = toTokenImpl rawId (i - 1) c' acc
+  | i == 63 = intToDigit c' : acc
+  | r == 3 = toTokenImpl rawId (i + 1) 0 (intToDigit c' : acc)
+  | otherwise = toTokenImpl rawId (i + 1) c' acc
   where
     r = i `mod` 4
     c' = if testBit rawId i then setBit c r else c
