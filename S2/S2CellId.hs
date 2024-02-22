@@ -147,7 +147,7 @@ lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
 
 toTokenImpl :: Word64 -> Int -> Int -> String -> String
 toTokenImpl rawId i c acc
-  | i == 63 = intToDigit c' : acc
+  | i == 64 = acc
   | r == 3 = toTokenImpl rawId (i + 1) 0 (intToDigit c' : acc)
   | otherwise = toTokenImpl rawId (i + 1) c' acc
   where
