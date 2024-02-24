@@ -121,7 +121,7 @@ child position (S2CellId rawId) =
 -- hexadecmial representation of `S2CellId.id`, @id[6]@ is the next lowest place value, etc.
 -- @`fromToken` (`toToken` x) == x@ even if @x@ is invalid.
 toToken :: S2CellId -> String
-toToken cellId = "0x" ++ toTokenImpl (S2.S2CellId.id cellId) 0 0 ""
+toToken (S2CellId rawId) = "0x" ++ toTokenImpl rawId 0 0 ""
 
 -- |
 -- Decodes an S2CellId from a string representation which is expected to be formatted
