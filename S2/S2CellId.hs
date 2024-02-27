@@ -170,9 +170,9 @@ toTokenImpl rawId i c acc
 -- in order of highest-to-lowest hexadecimal digit value.
 fromTokenImpl ::
   -- | If an earlier stage has encountered an error, will be Nothing. Otherwise contains a Word64
-  -- representing a partially-decoded raw cell ID. At each step this function will bit-shift the
-  -- the contents of this word to the left by 4 and insert the decoded value of the next-highest
-  -- digit in the token string into the 4 rightmost bits.
+  -- representing a partially-decoded raw cell ID. At each step this function will produce an
+  -- updated version of this word containing the current contents bit-shifted to the left by 4 and
+  -- the decoded value of the next hexadecimal digit in 4 rightmost bits.
   Maybe Word64 ->
   -- | The remaining portion of the token string to decode.
   String ->
@@ -193,8 +193,8 @@ decodeAndInsertHexDigit ::
   Word64 ->
   -- | The next character to be decoded and inserted into the in-progress raw cell ID.
   Char ->
-  -- | The raw cell ID after incorporating the successfully-decoded hexadecimal digit, or `Nothing`
-  -- if decoding failed.
+  -- | The next version of the raw cell ID after incorporating the successfully-decoded hexadecimal
+  -- digit, or `Nothing` if decoding failed.
   Maybe Word64
 decodeAndInsertHexDigit rawId c =
   if isHexDigit c then Just (shiftL rawId 4 + toEnum (digitToInt c)) else Nothing
