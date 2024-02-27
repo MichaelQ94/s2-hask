@@ -149,9 +149,10 @@ lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
 toTokenImpl ::
   -- | The raw cell ID to be converted into a string token.
   Word64 ->
-  -- | The index of the current bit of the raw cell ID to be processed.
+  -- | The index of the current bit of the raw cell ID to be inspected.
   Int ->
-  -- | The next character to be prepended to the token string.
+  -- | The integer representing the next hexadecimal digit to be prepended to the token string, to
+  -- be built by inspecting the corresponding bits of the raw cell ID.
   Int ->
   -- | The partially-built token string.
   String ->
