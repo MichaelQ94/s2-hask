@@ -145,14 +145,14 @@ lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
 
 -- Implementation details
 
--- | Builds the token string in order of lowest-to-highest hexadecimal digit value.
+-- | Builds the token string for a cell ID in order of lowest-to-highest hexadecimal digit value.
 toTokenImpl ::
   -- | The raw cell ID to be converted into a string token.
   Word64 ->
   -- | The index of the current bit of the raw cell ID to be inspected.
   Int ->
   -- | The integer representing the next hexadecimal digit to be prepended to the token string, to
-  -- be built by inspecting the corresponding bits of the raw cell ID.
+  -- be synthesized by inspecting the corresponding bits of the raw cell ID.
   Int ->
   -- | The partially-built token string.
   String ->
@@ -170,9 +170,7 @@ toTokenImpl rawId i c acc
 -- in order of highest-to-lowest hexadecimal digit value.
 fromTokenImpl ::
   -- | If an earlier stage has encountered an error, will be Nothing. Otherwise contains a Word64
-  -- representing a partially-decoded raw cell ID. At each step this function will produce an
-  -- updated version of this word by decoding and incorporating the next character in the token
-  -- string.
+  -- representing a partially-decoded raw cell ID.
   Maybe Word64 ->
   -- | The remaining portion of the token string to decode.
   String ->
@@ -186,17 +184,6 @@ fromTokenImpl _ (x : xs) 0 = none ()
 fromTokenImpl _ [] _ = none ()
 fromTokenImpl (Just rawId) (c : cs) i = fromTokenImpl (decodeAndInsertHexDigit rawId c) cs (i - 1)
 
--- | Given a word and a character representing a hexadecimal digit, returns a new word containing
--- the input word's contents bit-shifted to the left by 4 and the bits representing the decoded
--- digit in the 4 rightmost bits. Returns `Nothing` if the decoding fails.
-decodeAndInsertHexDigit ::
-  -- | Expected to contain the previously-decoded hexadecimal digits in its lowest-place-value
-  -- bits.
-  Word64 ->
-  -- | The next character to be decoded and inserted into the in-progress raw cell ID.
-  Char ->
-  -- | The next version of the raw cell ID after incorporating the successfully-decoded hexadecimal
-  -- digit, or `Nothing` if decoding failed.
-  Maybe Word64
+decodeAndInsertHexDigit :: Word64 -> Char -> Maybe Word64
 decodeAndInsertHexDigit rawId c =
   if isHexDigit c then Just (shiftL rawId 4 + toEnum (digitToInt c)) else Nothing
