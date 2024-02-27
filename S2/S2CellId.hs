@@ -78,8 +78,8 @@ sentinel :: () -> S2CellId
 sentinel () = S2CellId 0xFFFFFFFFFFFFFFFF
 
 -- |
--- Returns true if the result of `id` represents a valid cell. All functions taking S2CellIds as input
--- require `isValid` to be True unless otherwise specified.
+-- Returns true if the result of `id` represents a valid cell. All functions taking S2CellIds as
+-- input require `isValid` to be True unless otherwise specified.
 isValid :: S2CellId -> Bool
 isValid cellId = (face cellId < numFaces ()) && (lsb cellId .&. 0x1555555555555555 > 0)
 
@@ -104,8 +104,8 @@ parentAtLevel level (S2CellId rawId) = S2CellId ((rawId .&. (complement newLsb +
     newLsb = lsbForLevel level
 
 -- |
--- Return the immediate child of this cell at the given traversal order position (in the range 0 to 3).
--- This cell must not be a leaf cell.
+-- Return the immediate child of this cell at the given traversal order position (in the range 0 to
+-- 3). This cell must not be a leaf cell.
 child :: Int -> S2CellId -> S2CellId
 {-
 To change the level, we need to move the least-significant bit two
@@ -145,7 +145,18 @@ lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
 
 -- Implementation details
 
-toTokenImpl :: Word64 -> Int -> Int -> String -> String
+-- | Builds the token string in lowest-to-highest hexadecimal digit value.
+toTokenImpl ::
+  -- | The raw cell ID to be converted into a string token.
+  Word64 ->
+  -- | The index of the current bit of the raw cell ID to be processed.
+  Int ->
+  -- | The next character to be prepended to the token string.
+  Int ->
+  -- | The partially-built token string.
+  String ->
+  -- | The final token string.
+  String
 toTokenImpl rawId i c acc
   | i == 64 = acc
   | r == 3 = toTokenImpl rawId (i + 1) 0 (intToDigit c' : acc)
@@ -154,12 +165,35 @@ toTokenImpl rawId i c acc
     r = i `mod` 4
     c' = if testBit rawId i then setBit c r else c
 
-fromTokenImpl :: Maybe Word64 -> String -> Int -> S2CellId
+-- | Decodes a possibly-invalid string of hexadecimal digits as an S2CellId. The decoding proceeds
+-- in order of highest-to-lowest hexadecimal digit value.
+fromTokenImpl ::
+  -- | If an earlier stage has encountered an error, will be Nothing. Otherwise contains a Word64
+  -- representing a partially-decoded raw cell ID. At each step this function will bit-shift the
+  -- the contents of this word to the left by 4 and insert the decoded value of the next-highest
+  -- digit in the token string into the 4 rightmost bits.
+  Maybe Word64 ->
+  -- | The remaining portion of the token string to decode.
+  String ->
+  -- | The expected length of the remaining portion of the token string.
+  Int ->
+  -- | A successfully-decoded S2CellId, or `none ()` if any error was encountered during decoding.
+  S2CellId
 fromTokenImpl (Just rawId) [] 0 = S2CellId rawId
 fromTokenImpl Nothing _ _ = none ()
 fromTokenImpl _ (x : xs) 0 = none ()
 fromTokenImpl _ [] _ = none ()
-fromTokenImpl (Just rawId) (c : cs) i = fromTokenImpl (shiftAndAppend rawId c) cs (i - 1)
+fromTokenImpl (Just rawId) (c : cs) i = fromTokenImpl (decodeAndInsertHexDigit rawId c) cs (i - 1)
 
-shiftAndAppend :: Word64 -> Char -> Maybe Word64
-shiftAndAppend rawId c = if isHexDigit c then Just (rawId * 16 + toEnum (digitToInt c)) else Nothing
+-- | Helper function for the implementation of `fromTokenImpl`.
+decodeAndInsertHexDigit ::
+  -- | Expected to contain the previously-decoded hexadecimal digits in its lowest-place-value
+  -- bits.
+  Word64 ->
+  -- | The next character to be decoded and inserted into the in-progress raw cell ID.
+  Char ->
+  -- | The raw cell ID after incorporating the successfully-decoded hexadecimal digit, or `Nothing`
+  -- if decoding failed.
+  Maybe Word64
+decodeAndInsertHexDigit rawId c =
+  if isHexDigit c then Just (shiftL rawId 4 + toEnum (digitToInt c)) else Nothing
