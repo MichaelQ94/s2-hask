@@ -171,8 +171,8 @@ toTokenImpl rawId i c acc
 fromTokenImpl ::
   -- | If an earlier stage has encountered an error, will be Nothing. Otherwise contains a Word64
   -- representing a partially-decoded raw cell ID. At each step this function will produce an
-  -- updated version of this word containing the current contents bit-shifted to the left by 4 and
-  -- the decoded value of the next hexadecimal digit in 4 rightmost bits.
+  -- updated version of this word by decoding and incorporating the next character in the token
+  -- string.
   Maybe Word64 ->
   -- | The remaining portion of the token string to decode.
   String ->
@@ -186,7 +186,9 @@ fromTokenImpl _ (x : xs) 0 = none ()
 fromTokenImpl _ [] _ = none ()
 fromTokenImpl (Just rawId) (c : cs) i = fromTokenImpl (decodeAndInsertHexDigit rawId c) cs (i - 1)
 
--- | Helper function for the implementation of `fromTokenImpl`.
+-- | Given a word and a character representing a hexadecimal digit, returns a new word containing
+-- the input word's contents bit-shifted to the left by 4 and the bits representing the decoded
+-- digit in the 4 rightmost bits. Returns `Nothing` if the decoding fails.
 decodeAndInsertHexDigit ::
   -- | Expected to contain the previously-decoded hexadecimal digits in its lowest-place-value
   -- bits.
