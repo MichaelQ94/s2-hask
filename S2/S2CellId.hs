@@ -93,9 +93,9 @@ level (S2CellId rawId) = maxLevel () - (countTrailingZeros rawId `div` 2)
 
 -- | Return the cell at the previous level.
 parent :: S2CellId -> S2CellId
-parent (S2CellId rawId) = S2CellId ((rawId .&. (complement newLsb + 1)) .|. newLsb)
+parent cellId@(S2CellId rawId) = S2CellId ((rawId .&. (complement newLsb + 1)) .|. newLsb)
   where
-    newLsb = shiftL (lsb (S2CellId rawId)) 2
+    newLsb = shiftL (lsb cellId) 2
 
 -- | Return the cell at the given level (which must be less than or equal to the current level).
 parentAtLevel :: Int -> S2CellId -> S2CellId
@@ -113,8 +113,8 @@ positions downward.  We do this by subtracting (4 * new_lsb) and adding
 new_lsb.  Then to advance to the given child cell, we add
 (2 * position * new_lsb).
 -}
-child position (S2CellId rawId) =
-  S2CellId (rawId + fromIntegral (2 * position + 1 - 4) * shiftR (lsb (S2CellId rawId)) 2)
+child position cellId@(S2CellId rawId) =
+  S2CellId (rawId + fromIntegral (2 * position + 1 - 4) * shiftR (lsb cellId) 2)
 
 -- |
 -- Returns the string @0x{id[7]}...{id[0]}@ where @id[7]@ is the most significant digit in the
