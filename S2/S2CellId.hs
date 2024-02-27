@@ -145,7 +145,7 @@ lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
 
 -- Implementation details
 
--- | Builds the token string in lowest-to-highest hexadecimal digit value.
+-- | Builds the token string in order of lowest-to-highest hexadecimal digit value.
 toTokenImpl ::
   -- | The raw cell ID to be converted into a string token.
   Word64 ->
