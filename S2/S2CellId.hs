@@ -54,42 +54,42 @@ import Data.Word (Word64)
 -- discrete point, it is better to use the S2Cell class.
 newtype S2CellId = S2CellId Word64 deriving (Eq, Ord, Show)
 
-numFaces :: () -> Int
-numFaces () = 6
+numFaces :: Int
+numFaces = 6
 
-maxLevel :: () -> Int
-maxLevel () = 30
+maxLevel ::  Int
+maxLevel = 30
 
-posBits :: () -> Int
-posBits () = 2 * maxLevel () + 1
+posBits ::  Int
+posBits = 2 * maxLevel + 1
 
 -- | The 64-bit unique identifier for this cell.
 id :: S2CellId -> Word64
 id (S2CellId rawId) = rawId
 
 -- | Returns an invalid cell id.
-none :: () -> S2CellId
-none () = S2CellId 0
+none ::  S2CellId
+none = S2CellId 0
 
 -- |
 -- Returns an invalid S2CellId guaranteed to be larger than any valid cell id. Useful for creating
 -- indexes.
-sentinel :: () -> S2CellId
-sentinel () = S2CellId 0xFFFFFFFFFFFFFFFF
+sentinel :: S2CellId
+sentinel = S2CellId 0xFFFFFFFFFFFFFFFF
 
 -- |
 -- Returns true if the result of `id` represents a valid cell. All functions taking S2CellIds as
 -- input require `isValid` to be True unless otherwise specified.
 isValid :: S2CellId -> Bool
-isValid cellId = (face cellId < numFaces ()) && (lsb cellId .&. 0x1555555555555555 > 0)
+isValid cellId = (face cellId < numFaces) && (lsb cellId .&. 0x1555555555555555 > 0)
 
 -- | Which cube face this cell belongs to, in the range 0..5.
 face :: S2CellId -> Int
-face (S2CellId rawId) = fromIntegral (shiftR rawId (posBits ()))
+face (S2CellId rawId) = fromIntegral (shiftR rawId posBits)
 
 -- | Return the subdivision level of this cell (range 0..maxLevel)
 level :: S2CellId -> Int
-level (S2CellId rawId) = maxLevel () - (countTrailingZeros rawId `div` 2)
+level (S2CellId rawId) = maxLevel - (countTrailingZeros rawId `div` 2)
 
 -- | Return the cell at the previous level.
 parent :: S2CellId -> S2CellId
@@ -125,11 +125,11 @@ toToken (S2CellId rawId) = "0x" ++ toTokenImpl rawId 0 0 ""
 
 -- |
 -- Decodes an S2CellId from a string representation which is expected to be formatted
--- just like the output of `toToken`. Returns @none ()@ for malformed inputs. @`fromToken`
+-- just like the output of `toToken`. Returns @none@ for malformed inputs. @`fromToken`
 -- (`toToken` x) == x@ even if @x@ is invalid.
 fromToken :: String -> S2CellId
 fromToken ('0' : 'x' : s) = fromTokenImpl (Just 0) s 16
-fromToken _ = none ()
+fromToken _ = none
 
 -- |
 -- Return the lowest-numbered bit that is on for this cell id, which is
@@ -141,7 +141,7 @@ lsb (S2CellId rawId) = rawId .&. (complement rawId + 1)
 
 -- | Return the lowest-numbered bit that is on for cells at the given level.
 lsbForLevel :: Int -> Word64
-lsbForLevel level = shiftL 1 (2 * (maxLevel () - level))
+lsbForLevel level = shiftL 1 (2 * (maxLevel - level))
 
 -- Implementation details
 
@@ -176,12 +176,12 @@ fromTokenImpl ::
   String ->
   -- | The expected length of the remaining portion of the token string.
   Int ->
-  -- | A successfully-decoded S2CellId, or `none ()` if any error was encountered during decoding.
+  -- | A successfully-decoded S2CellId, or `none` if any error was encountered during decoding.
   S2CellId
 fromTokenImpl (Just rawId) [] 0 = S2CellId rawId
-fromTokenImpl Nothing _ _ = none ()
-fromTokenImpl _ (x : xs) 0 = none ()
-fromTokenImpl _ [] _ = none ()
+fromTokenImpl Nothing _ _ = none
+fromTokenImpl _ (x : xs) 0 = none
+fromTokenImpl _ [] _ = none
 fromTokenImpl (Just rawId) (c : cs) i = fromTokenImpl (decodeAndInsertHexDigit rawId c) cs (i - 1)
 
 decodeAndInsertHexDigit :: Word64 -> Char -> Maybe Word64
