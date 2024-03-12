@@ -22,6 +22,6 @@ prop_vec_cross :: S2Point -> S2Point -> Bool
 prop_vec_cross p1@(x1, y1, z1) p2@(x2, y2, z2) =
   p1 `cross3` p2
     == ( (y1 * z2) - (y2 * z1),
-         (z2 * x1) - (z1 * x2),
+         (z1 * x2) - (z2 * x1),
          (x1 * y2) - (x2 * y1)
        )
