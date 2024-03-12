@@ -14,5 +14,3 @@ import Data.VectorSpace
 -- this. Among other things, there are overloaded operators that make it convenient
 -- to write arithmetic expressions (e.g. (1-x)*p1 + x*p2).
 type S2Point = (Double, Double, Double)
-
-

@@ -2,7 +2,7 @@
 module Main (main) where
 
 import Test.Framework
-import S2.S2CellId
+import {-@ HTF_TESTS @-} S1AngleTest
 import {-@ HTF_TESTS @-} S2CellIdTest
 import {-@ HTF_TESTS @-} S2PointTest
 
