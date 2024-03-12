@@ -17,16 +17,16 @@ author:             hoisinberg
 maintainer:         michaelq94@gmail.com
 
 library s2-geometry
-  exposed-modules: S2.S2CellId
+  exposed-modules: S2.S2CellId, S2.S2Point
   hs-source-dirs: ., S2
-  build-depends: base
+  build-depends: base, vector-space
   default-language: Haskell2010
 
 test-suite s2-hask-test
   main-is: Main.hs
   type: exitcode-stdio-1.0
   hs-source-dirs: tests/S2
-  other-modules: S2CellIdTest
+  other-modules: S2CellIdTest, S2PointTest
   build-depends: HTF, base, s2-geometry
   build-tool-depends: HTF:htfpp
   default-language: Haskell2010
