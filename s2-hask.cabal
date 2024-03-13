@@ -18,11 +18,11 @@ maintainer:         michaelq94@gmail.com
 
 library s2-geometry
   exposed-modules: S2.S1Angle, S2.S2CellId, S2.S2LatLng, S2.S2Point
-  hs-source-dirs: ., S2
+  hs-source-dirs: ., src
   build-depends: base, vector-space
   default-language: Haskell2010
 
-test-suite s2-hask-test
+test-suite s2-geometry-test
   main-is: Main.hs
   type: exitcode-stdio-1.0
   hs-source-dirs: tests/S2
