@@ -1,6 +1,6 @@
-module S2.S2CellId
+module Geometry.S2.S2CellId
   ( S2CellId (..),
-    S2.S2CellId.id,
+    Geometry.S2.S2CellId.id,
     none,
     sentinel,
     isValid,

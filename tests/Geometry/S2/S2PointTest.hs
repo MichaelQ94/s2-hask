@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 
-module S2PointTest (htf_thisModulesTests) where
+module Geometry.S2.S2PointTest (htf_thisModulesTests) where
 
-import S2.S2Point as S2Point
+import Geometry.S2.S2Point as S2Point
 import Test.Framework
 
 -- Already tested by the vector-space library, but gives a demo of

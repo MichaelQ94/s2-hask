@@ -1,4 +1,4 @@
-module S2.S2Point (
+module Geometry.S2.S2Point (
   module Data.AdditiveGroup,
   module Data.Cross,
   module Data.VectorSpace,

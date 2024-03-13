@@ -1,4 +1,4 @@
-module S2.S1Angle
+module Geometry.S2.S1Angle
   ( S1Angle,
     fromRadians,
     fromDegrees,

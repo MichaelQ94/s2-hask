@@ -1,13 +1,13 @@
-module S2.S2LatLng
+module Geometry.S2.S2LatLng
   ( S2LatLng,
-    S2.S2LatLng.fromRadians,
-    S2.S2LatLng.fromDegrees,
+    Geometry.S2.S2LatLng.fromRadians,
+    Geometry.S2.S2LatLng.fromDegrees,
     latitude,
     longitude,
   )
 where
 
-import S2.S1Angle as S1Angle
+import Geometry.S2.S1Angle as S1Angle
 
 -- This class represents a point on the unit sphere as a pair
 -- of latitude-longitude coordinates.  Like the rest of the "geometry"

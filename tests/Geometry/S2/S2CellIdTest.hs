@@ -1,9 +1,9 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 
-module S2CellIdTest (htf_thisModulesTests) where
+module Geometry.S2.S2CellIdTest (htf_thisModulesTests) where
 
 import Data.Word (Word64)
-import S2.S2CellId as S2CellId
+import Geometry.S2.S2CellId as S2CellId
 import Test.Framework
 
 prop_id :: Word64 -> Bool

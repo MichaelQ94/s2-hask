@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -F -pgmF htfpp #-}
 
-module S1AngleTest (htf_thisModulesTests) where
+module Geometry.S2.S1AngleTest (htf_thisModulesTests) where
 
-import S2.S1Angle as S1Angle
+import Geometry.S2.S1Angle as S1Angle
 import Test.Framework
 
 prop_toRadians_fromRadians :: Double -> Bool
