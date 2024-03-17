@@ -4,6 +4,7 @@ module Geometry.S2.S1Angle
     fromDegrees,
     toRadians,
     toDegrees,
+    normalized,
   )
 where
 
@@ -50,14 +51,31 @@ where
 -- 64-bit IEEE 754 type (which is true on almost all modern platforms).
 data S1Angle = S1Angle Double deriving (Eq, Ord, Show)
 
+instance Num S1Angle where
+  (S1Angle a) + (S1Angle b) = S1Angle (a + b)
+  (S1Angle a) * (S1Angle b) = S1Angle (a * b)
+  abs (S1Angle rad) = S1Angle (abs rad)
+  signum (S1Angle rad) = S1Angle (signum rad)
+  fromInteger n = S1Angle (fromInteger n)
+  negate (S1Angle rad) = S1Angle (negate rad)
+
 fromRadians :: Double -> S1Angle
 fromRadians rad = S1Angle rad
 
 fromDegrees :: Double -> S1Angle
-fromDegrees deg = S1Angle (((pi :: Double) / 180) * deg)
+fromDegrees deg = S1Angle ((pi / 180) * deg)
 
 toRadians :: S1Angle -> Double
 toRadians (S1Angle rad) = rad
 
 toDegrees :: S1Angle -> Double
-toDegrees (S1Angle rad) = (180 / (pi :: Double)) * rad
+toDegrees (S1Angle rad) = (180 / pi) * rad
+
+-- Return the angle normalized to the range (-180, 180] degrees.
+normalized :: S1Angle -> S1Angle
+normalized a@(S1Angle rad)
+  | rad >= 0 && rad <= pi = a
+  | otherwise = S1Angle (if rad_rem > pi then rad_rem - tau else rad_rem)
+  where
+    rad_rem = rad - (tau * fromIntegral (floor (rad / tau)))
+    tau = 2 * pi
