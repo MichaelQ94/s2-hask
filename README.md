@@ -1,2 +1,2 @@
 # s2-hask
-Haskell implementation of https://s2geometry.io/
+Haskell implementation of http://s2geometry.io/
