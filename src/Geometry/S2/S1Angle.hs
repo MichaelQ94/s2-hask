@@ -1,5 +1,5 @@
 module Geometry.S2.S1Angle
-  ( S1Angle,
+  ( S1Angle(..),
     fromRadians,
     fromDegrees,
     toRadians,
@@ -8,7 +8,7 @@ module Geometry.S2.S1Angle
   )
 where
 
-import Geometry.S2.Util (dblRem)
+import Geometry.S2.Util (dblRem, tau)
 
 -- This type represents a one-dimensional angle (as opposed to a
 -- two-dimensional solid angle).  It has methods for converting angles to
@@ -78,4 +78,3 @@ normalized :: S1Angle -> S1Angle
 normalized (S1Angle rad) = S1Angle (if rem <= -pi then pi else rem)
   where
     rem = dblRem rad tau
-    tau = 2 * pi
