@@ -8,6 +8,8 @@ module Geometry.S2.S1Angle
   )
 where
 
+import Geometry.S2.Util (dblRem)
+
 -- This type represents a one-dimensional angle (as opposed to a
 -- two-dimensional solid angle).  It has methods for converting angles to
 -- or from radians, degrees, and the E5/E6/E7 representations (i.e. degrees
@@ -75,5 +77,5 @@ toDegrees (S1Angle rad) = (180 / pi) * rad
 normalized :: S1Angle -> S1Angle
 normalized (S1Angle rad) = S1Angle (if rem <= -pi then pi else rem)
   where
-    rem = rad - (tau * fromIntegral (round (rad / tau)))
+    rem = dblRem rad tau
     tau = 2 * pi

@@ -19,6 +19,7 @@ maintainer:         michaelq94@gmail.com
 library s2-geometry
   exposed-modules: Geometry.S2.S1Angle, Geometry.S2.S2CellId, Geometry.S2.S2LatLng, Geometry.S2.S2Point
   hs-source-dirs: ., src
+  other-modules: Geometry.S2.Util
   build-depends: base, vector-space
   default-language: Haskell2010
 
