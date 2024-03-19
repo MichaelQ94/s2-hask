@@ -73,9 +73,7 @@ toDegrees (S1Angle rad) = (180 / pi) * rad
 
 -- Return the angle normalized to the range (-180, 180] degrees.
 normalized :: S1Angle -> S1Angle
-normalized a@(S1Angle rad)
-  | rad >= 0 && rad <= pi = a
-  | otherwise = S1Angle (if rad_rem > pi then rad_rem - tau else rad_rem)
+normalized (S1Angle rad) = S1Angle (if rem <= -pi then pi else rem)
   where
-    rad_rem = rad - (tau * fromIntegral (floor (rad / tau)))
+    rem = rad - (tau * fromIntegral (round (rad / tau)))
     tau = 2 * pi
