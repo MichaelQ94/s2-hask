@@ -36,7 +36,7 @@ lng (S2LatLng _ longitude) = longitude
 -- and the longitude is between -180 and 180 degrees inclusive.
 isValid :: S2LatLng -> Bool
 isValid (S2LatLng (S1Angle latRad) (S1Angle lngRad)) =
-  -halfPi <= latRad && latRad <= halfPi && -pi <= lngRad && lngRad <= halfPi
+  -halfPi <= latRad && latRad <= halfPi && -pi <= lngRad && lngRad <= pi
 
 -- Clamps the latitude to the range [-90, 90] degrees, and adds or subtracts
 -- a multiple of 360 degrees to the longitude if necessary to reduce it to
