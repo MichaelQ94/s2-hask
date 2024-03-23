@@ -9,6 +9,7 @@ import Data.AdditiveGroup
 import Data.Cross
 import Data.VectorSpace
 
+-- |
 -- An S2Point represents a point on the unit sphere as a 3D vector.  Usually
 -- points are normalized to be unit length, but some methods do not require
 -- this. Among other things, there are overloaded operators that make it convenient

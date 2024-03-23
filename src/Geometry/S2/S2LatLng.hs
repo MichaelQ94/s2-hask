@@ -11,8 +11,10 @@ where
 
 import Geometry.S2.S1Angle (S1Angle)
 import Geometry.S2.S1Angle as S1Angle
+    ( S1Angle(..), fromRadians, fromDegrees )
 import Geometry.S2.Util (dblRem, halfPi, tau)
 
+-- |
 -- This class represents a point on the unit sphere as a pair
 -- of latitude-longitude coordinates.  Like the rest of the "geometry"
 -- package, the intent is to represent spherical geometry as a mathematical
@@ -32,12 +34,14 @@ lat (S2LatLng latitude _) = latitude
 lng :: S2LatLng -> S1Angle
 lng (S2LatLng _ longitude) = longitude
 
+-- |
 -- Return true if the latitude is between -90 and 90 degrees inclusive
 -- and the longitude is between -180 and 180 degrees inclusive.
 isValid :: S2LatLng -> Bool
 isValid (S2LatLng (S1Angle latRad) (S1Angle lngRad)) =
   -halfPi <= latRad && latRad <= halfPi && -pi <= lngRad && lngRad <= pi
 
+-- |
 -- Clamps the latitude to the range [-90, 90] degrees, and adds or subtracts
 -- a multiple of 360 degrees to the longitude if necessary to reduce it to
 -- the range [-180, 180].
