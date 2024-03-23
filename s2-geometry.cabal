@@ -1,22 +1,18 @@
 cabal-version:      2.4
-name:               s2-hask
+name:               s2-geometry
 version:            0.1.0.0
 
--- A short (one-line) description of the package.
--- synopsis:
+synopsis: Haskell implementation of http://s2geometry.io/
 
--- A longer description of the package.
--- description:
+description:
+  S2 is a spherical geometry library providing geometry primitives for describing points, lines, and
+  shapes on a sphere with powerful support for geometric constructions/queries (e.g., union,
+  intersection, containment) and spatial indexing.
 
--- A URL where users can report bugs.
--- bug-reports:
-
--- The license under which the package is released.
--- license:
-author:             hoisinberg
+author:             Michael Qian
 maintainer:         michaelq94@gmail.com
 
-library s2-geometry
+library
   exposed-modules: Geometry.S2.S1Angle, Geometry.S2.S2CellId, Geometry.S2.S2LatLng, Geometry.S2.S2Point
   hs-source-dirs: ., src
   other-modules: Geometry.S2.Util
