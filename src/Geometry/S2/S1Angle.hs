@@ -10,6 +10,7 @@ where
 
 import Geometry.S2.Util (dblRem, tau)
 
+-- |
 -- This type represents a one-dimensional angle (as opposed to a
 -- two-dimensional solid angle).  It has methods for converting angles to
 -- or from radians, degrees, and the E5/E6/E7 representations (i.e. degrees
@@ -51,7 +52,7 @@ import Geometry.S2.Util (dblRem, tau)
 --
 -- CAVEAT: All of the above properties depend on "double" being the usual
 -- 64-bit IEEE 754 type (which is true on almost all modern platforms).
-data S1Angle = S1Angle Double deriving (Eq, Ord, Show)
+newtype S1Angle = S1Angle Double deriving (Eq, Ord, Show)
 
 instance Num S1Angle where
   (S1Angle a) + (S1Angle b) = S1Angle (a + b)
