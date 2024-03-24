@@ -22,8 +22,8 @@ expectedDegreesVsRadians :: Int -> Int -> IO ()
 expectedDegreesVsRadians k n
   | k > n = return ()
   | otherwise = do
-      assertEqual (fromDegrees deg) (fromRadians ((fromIntegral k) * pi / 4))
-      assertEqual deg (toDegrees . fromDegrees $ deg)
-      expectedDegreesVsRadians (k + 1) n
+    assertEqual (fromDegrees deg) (fromRadians ((fromIntegral k) * pi / 4))
+    assertEqual deg (toDegrees . fromDegrees $ deg)
+    expectedDegreesVsRadians (k + 1) n
   where
     deg = fromIntegral (45 * k)

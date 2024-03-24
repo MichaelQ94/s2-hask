@@ -1,9 +1,10 @@
-module Geometry.S2.S2Point (
-  module Data.AdditiveGroup,
-  module Data.Cross,
-  module Data.VectorSpace,
-  S2Point
-) where
+module Geometry.S2.S2Point
+  ( module Data.AdditiveGroup,
+    module Data.Cross,
+    module Data.VectorSpace,
+    S2Point,
+  )
+where
 
 import Data.AdditiveGroup
 import Data.Cross

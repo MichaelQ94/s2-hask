@@ -1,5 +1,5 @@
 module Geometry.S2.S1Angle
-  ( S1Angle(..),
+  ( S1Angle,
     fromRadians,
     fromDegrees,
     toRadians,
@@ -63,7 +63,7 @@ instance Num S1Angle where
   negate (S1Angle rad) = S1Angle (negate rad)
 
 fromRadians :: Double -> S1Angle
-fromRadians rad = S1Angle rad
+fromRadians = S1Angle
 
 fromDegrees :: Double -> S1Angle
 fromDegrees deg = S1Angle ((pi / 180) * deg)
@@ -76,6 +76,6 @@ toDegrees (S1Angle rad) = (180 / pi) * rad
 
 -- | Return the angle normalized to the range (-180, 180] degrees.
 normalized :: S1Angle -> S1Angle
-normalized (S1Angle rad) = S1Angle (if rem <= -pi then pi else rem)
+normalized (S1Angle rad) = S1Angle (if rem <= - pi then pi else rem)
   where
     rem = dblRem rad tau

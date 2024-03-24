@@ -38,7 +38,6 @@ test_basic =
         assertEqual (S1Angle.fromDegrees (-90)) (lat better2)
         assertEqual 0 (S1Angle.toRadians . lng $ better2)
 
-
 assertValid :: S2LatLng -> IO ()
 assertValid latLng = assertEqual True (S2LatLng.isValid latLng)
 
