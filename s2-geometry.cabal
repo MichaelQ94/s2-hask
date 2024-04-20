@@ -1,6 +1,7 @@
 cabal-version:      2.4
 name:               s2-geometry
 version:            0.1.0.0
+category:           geometry
 
 synopsis: Haskell implementation of http://s2geometry.io/
 
@@ -10,18 +11,23 @@ description:
   intersection, containment) and spatial indexing.
 
 -- A URL where users can report bugs.
--- bug-reports:
+-- bug-reports: TODO
 
 license: Apache-2.0
 
 author:             Michael Qian
 maintainer:         michaelq94@gmail.com
 
+
+source-repository head
+  type:     git
+  location: git://github.com/hoisinberg/s2-hask.git
+
 library
   exposed-modules: Geometry.S2.S1Angle, Geometry.S2.S2CellId, Geometry.S2.S2LatLng, Geometry.S2.S2Point
   hs-source-dirs: ., src
   other-modules: Geometry.S2.Util
-  build-depends: base, vector-space
+  build-depends: base < 5, vector-space
   default-language: Haskell2010
 
 test-suite s2-geometry-test
