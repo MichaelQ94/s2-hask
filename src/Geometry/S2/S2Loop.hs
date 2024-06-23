@@ -53,21 +53,21 @@ newtype S2Loop = S2Loop (Seq S2Point) deriving (Eq, Show)
 empty :: S2Loop
 empty = fromVertices [(0, 0, 1)]
 
+-- | Creates an S2Loop with the given vertex chain.
+fromVertices :: [S2Point] -> S2Loop
+fromVertices = S2Loop . fromList
+
 -- |
 -- A special vertex chain of length 1 that creates a full loop (i.e., a loop
 -- with no edges that contains all points).  See `empty` for details.
 full :: S2Loop
 full = fromVertices [(0, 0, -1)]
 
--- | Creates an S2Loop with the given vertex chain.
-fromVertices :: [S2Point] -> S2Loop
-fromVertices = S2Loop . fromList
+numVertices :: S2Loop -> Int
+numVertices (S2Loop vertices) = Data.Sequence.length vertices
 
 -- |
 -- Retrieve the vertex at the given index. If the index lies outside the range @[0, numVertices)@,
 -- the index will wrap around to give a valid vertex.
 vertex :: S2Loop -> Int -> S2Point
 vertex loop@(S2Loop vertices) i = index vertices (i `mod` numVertices loop)
-
-numVertices :: S2Loop -> Int
-numVertices (S2Loop vertices) = Data.Sequence.length vertices
