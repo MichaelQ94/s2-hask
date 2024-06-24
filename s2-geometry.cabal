@@ -36,9 +36,9 @@ library
   default-language: Haskell2010
 
 test-suite s2-geometry-test
-  main-is: Main.hs
+  main-is: TestMain.hs
   type: exitcode-stdio-1.0
-  hs-source-dirs: tests
+  hs-source-dirs: test
   other-modules:
     Geometry.S2.S1AngleTest,
     Geometry.S2.S2CellIdTest,

@@ -3,14 +3,14 @@
 module Geometry.S2.S2Loop
   ( S2Loop,
     empty,
-    fromVertices,
     full,
+    fromVertices,
     numVertices,
     vertex,
   )
 where
 
-import Data.Sequence (Seq, index, length, fromList)
+import Data.Sequence (Seq, fromList, index, length)
 import Geometry.S2.S2Point
 
 -- |
@@ -53,15 +53,15 @@ newtype S2Loop = S2Loop (Seq S2Point) deriving (Eq, Show)
 empty :: S2Loop
 empty = fromVertices [(0, 0, 1)]
 
--- | Creates an S2Loop with the given vertex chain.
-fromVertices :: [S2Point] -> S2Loop
-fromVertices = S2Loop . fromList
-
 -- |
 -- A special vertex chain of length 1 that creates a full loop (i.e., a loop
 -- with no edges that contains all points).  See `empty` for details.
 full :: S2Loop
 full = fromVertices [(0, 0, -1)]
+
+-- | Creates an S2Loop with the given vertex chain.
+fromVertices :: [S2Point] -> S2Loop
+fromVertices = S2Loop . fromList
 
 numVertices :: S2Loop -> Int
 numVertices (S2Loop vertices) = Data.Sequence.length vertices
