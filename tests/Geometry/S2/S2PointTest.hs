@@ -2,6 +2,7 @@
 
 module Geometry.S2.S2PointTest (htf_thisModulesTests) where
 
+import Geometry.S2.S1Angle (toRadians)
 import Geometry.S2.S2Point as S2Point
 import Test.Framework
 
@@ -25,3 +26,7 @@ prop_vec_cross p1@(x1, y1, z1) p2@(x2, y2, z2) =
          (z1 * x2) - (z2 * x1),
          (x1 * y2) - (x2 * y1)
        )
+
+test_angleBetween = do
+  assertEqual (pi / 2) (toRadians $ angleBetween (1, 0, 0) (0, 0, 2))
+  assertEqual 0 (toRadians $ angleBetween (1, 0, 0) (1, 0, 0))
