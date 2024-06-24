@@ -16,7 +16,21 @@ import Geometry.S2.S2LatLng as S2LatLng
     pointLng,
     toPoint,
   )
+import Geometry.S2.S2Point as S2Point (S2Point, angleBetween, magnitude)
 import Test.Framework
+  ( Gen,
+    Property,
+    TestSuite,
+    assertEqual,
+    forAll,
+    makeLoc,
+    makeQuickCheckTest,
+    makeTestSuite,
+    makeUnitTest,
+    qcAssertion,
+    suchThat,
+  )
+import Test.QuickCheck.Gen (genDouble)
 
 prop_toRadians_fromRadians :: Double -> Double -> Bool
 prop_toRadians_fromRadians latRad lngRad =
@@ -64,6 +78,10 @@ test_convertToAndFromS2Point = do
     pi
     (toRadians . lng . S2LatLng.fromPoint . S2LatLng.toPoint $ S2LatLng.fromRadians 0.1 (- pi))
 
+prop_convertFromAndToS2Point :: Property
+prop_convertFromAndToS2Point =
+  forAll nonZeroS2Points $ \p -> approxEqual p (S2LatLng.toPoint . S2LatLng.fromPoint $ p)
+
 test_negativeZeros = do
   assertIdentical 0 (toRadians . pointLat $ (1, 0, -0.0))
   assertIdentical 0 (toRadians . pointLng $ (1, -0.0, 0))
@@ -81,3 +99,16 @@ assertValid latLng = assertEqual True (S2LatLng.isValid latLng)
 
 assertInvalid :: S2LatLng -> IO ()
 assertInvalid latLng = assertEqual False (S2LatLng.isValid latLng)
+
+approxEqual :: S2Point -> S2Point -> Bool
+approxEqual a b = toRadians (S2Point.angleBetween a b) < 1E-15
+
+nonZeroS2Points :: Gen S2Point
+nonZeroS2Points = suchThat s2Points (\p -> magnitude p > 0)
+
+s2Points :: Gen S2Point
+s2Points = do
+  x <- genDouble
+  y <- genDouble
+  z <- genDouble
+  return (x, y, z)
