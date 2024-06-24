@@ -2,8 +2,20 @@
 
 module Geometry.S2.S2LatLngTest (htf_thisModulesTests) where
 
-import Geometry.S2.S1Angle as S1Angle
+import Geometry.S2.S1Angle as S1Angle (fromDegrees, toDegrees, toRadians)
 import Geometry.S2.S2LatLng as S2LatLng
+  ( S2LatLng,
+    fromDegrees,
+    fromPoint,
+    fromRadians,
+    isValid,
+    lat,
+    lng,
+    normalized,
+    pointLat,
+    pointLng,
+    toPoint,
+  )
 import Test.Framework
 
 prop_toRadians_fromRadians :: Double -> Double -> Bool
@@ -37,6 +49,32 @@ test_basic =
         assertValid better2
         assertEqual (S1Angle.fromDegrees (-90)) (lat better2)
         assertEqual 0 (S1Angle.toRadians . lng $ better2)
+
+test_convertToAndFromS2Point = do
+  assertEqual
+    90
+    (toDegrees . lat . S2LatLng.fromPoint . S2LatLng.toPoint $ S2LatLng.fromDegrees 90 65)
+  assertEqual
+    (- pi / 2)
+    (toRadians . lat . S2LatLng.fromPoint . S2LatLng.toPoint $ S2LatLng.fromRadians (- pi / 2) 1)
+  assertEqual
+    180
+    (toDegrees . lng . S2LatLng.fromPoint . S2LatLng.toPoint $ S2LatLng.fromDegrees 12.2 180)
+  assertEqual
+    pi
+    (toRadians . lng . S2LatLng.fromPoint . S2LatLng.toPoint $ S2LatLng.fromRadians 0.1 (- pi))
+
+test_negativeZeros = do
+  assertIdentical 0 (toRadians . pointLat $ (1, 0, -0.0))
+  assertIdentical 0 (toRadians . pointLng $ (1, -0.0, 0))
+  assertIdentical pi (toRadians . pointLng $ (-1, -0.0, 0))
+  assertIdentical 0 (toRadians . pointLng $ (-0.0, 0, 1))
+  assertIdentical 0 (toRadians . pointLng $ (-0.0, -0.0, 1))
+
+assertIdentical :: Double -> Double -> IO ()
+assertIdentical x y = do
+  assertEqual x y
+  assertEqual (isNegativeZero x) (isNegativeZero y)
 
 assertValid :: S2LatLng -> IO ()
 assertValid latLng = assertEqual True (S2LatLng.isValid latLng)
