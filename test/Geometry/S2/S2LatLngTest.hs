@@ -30,7 +30,7 @@ import Test.Framework
     qcAssertion,
     suchThat,
   )
-import Test.QuickCheck.Gen (genDouble)
+import Test.QuickCheck.Gen (choose, elements)
 
 prop_toRadians_fromRadians :: Double -> Double -> Bool
 prop_toRadians_fromRadians latRad lngRad =
@@ -80,7 +80,7 @@ test_convertToAndFromS2Point = do
 
 prop_convertFromAndToS2Point :: Property
 prop_convertFromAndToS2Point =
-  forAll nonZeroS2Points $ \p -> approxEqual p (S2LatLng.toPoint . S2LatLng.fromPoint $ p)
+  forAll normalizedS2Points $ \p -> approxEqual p (S2LatLng.toPoint . S2LatLng.fromPoint $ p)
 
 test_negativeZeros = do
   assertIdentical 0 (toRadians . pointLat $ (1, 0, -0.0))
@@ -103,12 +103,11 @@ assertInvalid latLng = assertEqual False (S2LatLng.isValid latLng)
 approxEqual :: S2Point -> S2Point -> Bool
 approxEqual a b = toRadians (S2Point.angleBetween a b) < 1E-15
 
-nonZeroS2Points :: Gen S2Point
-nonZeroS2Points = suchThat s2Points (\p -> magnitude p > 0)
-
-s2Points :: Gen S2Point
-s2Points = do
-  x <- genDouble
-  y <- genDouble
-  z <- genDouble
+normalizedS2Points :: Gen S2Point
+normalizedS2Points = do
+  z <- choose (-1, 1)
+  let maxY = sqrt (1 - (z * z))
+  y <- choose (- maxY, maxY)
+  let absX = sqrt (1 - (z * z) - (y * y))
+  x <- elements [-absX, absX]
   return (x, y, z)
