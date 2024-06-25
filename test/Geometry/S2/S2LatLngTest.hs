@@ -109,7 +109,7 @@ normalizedS2Points = do
   let maxY = sqrt (1 - (z * z))
   y <- choose (- maxY, maxY)
   let absX = sqrt (1 - (z * z) - (y * y))
-  x <- elements [-absX, absX]
+  x <- elements [- absX, absX]
   -- Balance the asymmetry of floating-point operations by randomly choosing one of the 6 valid
   -- permutations of the coordinates.
   elements [(x, y, z), (y, z, x), (z, x, y), (z, y, x), (y, x, z), (x, z, y)]

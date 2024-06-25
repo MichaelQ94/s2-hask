@@ -97,6 +97,6 @@ toPoint (S2LatLng lat lng) = (cosLat * cos lngRad, cosLat * sin lngRad, sin latR
 
 -- Implementation details
 
--- |
+-- | Remove the negative sign if the input is -0.0
 makePositiveIfZero :: Double -> Double
 makePositiveIfZero x = if isNegativeZero x then - x else x
