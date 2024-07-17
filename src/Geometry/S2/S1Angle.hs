@@ -1,3 +1,4 @@
+{-# LANGUAGE InstanceSigs #-}
 module Geometry.S2.S1Angle
   ( S1Angle,
     fromRadians,
@@ -55,11 +56,22 @@ import Geometry.S2.Util (dblRem, tau)
 newtype S1Angle = S1Angle Double deriving (Eq, Ord, Show)
 
 instance Num S1Angle where
+  (+) :: S1Angle -> S1Angle -> S1Angle
   (S1Angle a) + (S1Angle b) = S1Angle (a + b)
+
+  (*) :: S1Angle -> S1Angle -> S1Angle
   (S1Angle a) * (S1Angle b) = S1Angle (a * b)
+
+  abs :: S1Angle -> S1Angle
   abs (S1Angle rad) = S1Angle (abs rad)
+
+  signum :: S1Angle -> S1Angle
   signum (S1Angle rad) = S1Angle (signum rad)
+
+  fromInteger :: Integer -> S1Angle
   fromInteger n = S1Angle (fromInteger n)
+
+  negate :: S1Angle -> S1Angle
   negate (S1Angle rad) = S1Angle (negate rad)
 
 fromRadians :: Double -> S1Angle

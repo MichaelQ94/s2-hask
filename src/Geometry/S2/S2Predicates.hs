@@ -59,5 +59,4 @@ triageSign a b c
     -- which is about 3.6548 * e, or 1.8274 * DBL_EPSILON.
     --
     -- In order to support vectors of magnitude <= sqrt(2), we double this value.
-    maxDetError :: Double
     maxDetError = 3.6548 * (epsilon :: Double)
