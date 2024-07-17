@@ -45,7 +45,8 @@ test-suite s2-geometry-test
     Geometry.S2.S2CellIdTest,
     Geometry.S2.S2LatLngTest,
     Geometry.S2.S2LoopTest,
-    Geometry.S2.S2PointTest
+    Geometry.S2.S2PointTest,
+    Geometry.S2.S2PredicatesTest
   build-depends: HTF, base, QuickCheck, s2-geometry
   build-tool-depends: HTF:htfpp
   default-language: Haskell2010

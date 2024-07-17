@@ -7,6 +7,7 @@ import {-@ HTF_TESTS @-} Geometry.S2.S2CellIdTest
 import {-@ HTF_TESTS @-} Geometry.S2.S2LatLngTest
 import {-@ HTF_TESTS @-} Geometry.S2.S2LoopTest
 import {-@ HTF_TESTS @-} Geometry.S2.S2PointTest
+import {-@ HTF_TESTS @-} Geometry.S2.S2PredicatesTest
 
 main :: IO ()
 main = htfMain htf_importedTests
