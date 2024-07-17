@@ -11,6 +11,8 @@ where
 dblRem :: Double -> Double -> Double
 dblRem a b = a - (b * fromIntegral (round (a / b)))
 
+halfPi :: Double
 halfPi = pi / 2
 
+tau :: Double
 tau = 2 * pi
