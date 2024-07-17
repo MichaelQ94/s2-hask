@@ -1,33 +1,10 @@
 module Geometry.S2.S2Predicates
-  ( orderedCCW,
-    triageSign,
+  ( triageSign,
   )
 where
 
 import Geometry.S2.S2Point
 import Numeric.Limits (epsilon)
-
--- |
--- Given 4 points on the unit sphere, return true if the edges OA, OB, and
--- OC are encountered in that order while sweeping CCW around the point O.
--- You can think of this as testing whether A <= B <= C with respect to the
--- CCW ordering around O that starts at A, or equivalently, whether B is
--- contained in the range of angles (inclusive) that starts at A and extends
--- CCW to C.  Properties:
---
---  (1) If OrderedCCW(a,b,c,o) && OrderedCCW(b,a,c,o), then a == b
---  (2) If OrderedCCW(a,b,c,o) && OrderedCCW(a,c,b,o), then b == c
---  (3) If OrderedCCW(a,b,c,o) && OrderedCCW(c,b,a,o), then a == b == c
---  (4) If a == b or b == c, then OrderedCCW(a,b,c,o) is true
---  (5) Otherwise if a == c, then OrderedCCW(a,b,c,o) is false
---
--- REQUIRES: a /= o && b /= o && c /= o
-orderedCCW :: S2Point -> S2Point -> S2Point -> S2Point -> Bool
-orderedCCW a b c o =
-  -- The last inequality below is ">" rather than ">=" so that we return true
-  -- if A == B or B == C, and otherwise false if A == C.  Recall that
-  -- Sign(x,y,z) == -Sign(z,y,x) for all x,y,z.
-  sum (map fromEnum [triageSign b o a >= 0, triageSign c o b >= 0, triageSign a o c > 0]) >= 2
 
 -- |
 -- Returns +1 if the points are definitely CCW, -1 if they are definitely CW, and 0 if two points
