@@ -2,11 +2,12 @@
 
 module Geometry.S2.S2PredicatesTest (htf_thisModulesTests) where
 
-import Geometry.S2.S2Point
-import Geometry.S2.S2Predicates
+import Geometry.S2.S2Point ( normalized )
+import Geometry.S2.S2Predicates ( orderedCCW, triageSign )
 import Test.Framework
     ( assertEqual, makeLoc, makeTestSuite, makeUnitTest, TestSuite )
 
+test_triageSign_simple :: IO ()
 test_triageSign_simple =
   let x = (1, 0, 0)
       y = (0, 1, 0)
@@ -18,6 +19,7 @@ test_triageSign_simple =
         assertEqual 0 (triageSign z z z)
         assertEqual 0 (triageSign x y (normalized (x + y)))
 
+test_orderedCCW_simple :: IO ()
 test_orderedCCW_simple =
   let x = (1, 0, 0)
       y = (0, 1, 0)

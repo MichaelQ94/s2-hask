@@ -4,11 +4,15 @@ module Geometry.S2.S2LoopTest (htf_thisModulesTests) where
 
 import Geometry.S2.S2Loop (empty, fromVertices, full, numVertices, vertex)
 import Test.Framework
+    ( assertEqual, makeLoc, makeTestSuite, makeUnitTest, TestSuite )
 
+test_emptyLoopIsSingleton :: IO ()
 test_emptyLoopIsSingleton = assertEqual (numVertices empty) 1
 
+test_fullLoopIsSingleton :: IO ()
 test_fullLoopIsSingleton = assertEqual (numVertices full) 1
 
+test_vertex_retrievesExpectedVertices :: IO ()
 test_vertex_retrievesExpectedVertices =
   let v0 = (1, 0, 0)
       v1 = (0, 1, 0)

@@ -11,7 +11,7 @@ module Geometry.S2.S2Loop
 where
 
 import Data.Sequence (Seq, fromList, index, length)
-import Geometry.S2.S2Point
+import Geometry.S2.S2Point ( S2Point )
 
 -- |
 -- An S2Loop represents a simple spherical polygon.  It consists of a single

@@ -39,6 +39,7 @@ prop_toRadians_fromRadians latRad lngRad =
   where
     s2LatLng = S2LatLng.fromRadians latRad lngRad
 
+test_basic :: IO ()
 test_basic =
   let ll_rad = S2LatLng.fromRadians (pi / 4) (pi / 2)
       ll_deg = S2LatLng.fromDegrees 45 90
@@ -64,6 +65,7 @@ test_basic =
         assertEqual (S1Angle.fromDegrees (-90)) (lat better2)
         assertEqual 0 (S1Angle.toRadians . lng $ better2)
 
+test_convertToAndFromS2Point :: IO ()
 test_convertToAndFromS2Point = do
   assertEqual
     90
@@ -82,6 +84,7 @@ prop_convertFromAndToS2Point :: Property
 prop_convertFromAndToS2Point =
   forAll normalizedS2Points $ \p -> approxEqual p (S2LatLng.toPoint . S2LatLng.fromPoint $ p)
 
+test_negativeZeros :: IO ()
 test_negativeZeros = do
   assertIdentical 0 (toRadians . pointLat $ (1, 0, -0.0))
   assertIdentical 0 (toRadians . pointLng $ (1, -0.0, 0))

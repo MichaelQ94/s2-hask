@@ -5,6 +5,7 @@ module Geometry.S2.S2Predicates
 where
 
 import Geometry.S2.S2Point
+    ( HasCross3(cross3), InnerSpace((<.>)), S2Point )
 import Numeric.Limits (epsilon)
 
 -- |
