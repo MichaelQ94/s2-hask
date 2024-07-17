@@ -29,10 +29,11 @@ library
     Geometry.S2.S2CellId,
     Geometry.S2.S2LatLng,
     Geometry.S2.S2Loop,
-    Geometry.S2.S2Point
+    Geometry.S2.S2Point,
+    Geometry.S2.S2Predicates
   hs-source-dirs: src
   other-modules: Geometry.S2.Util
-  build-depends: base < 5, containers, vector-space,
+  build-depends: base < 5, containers, numeric-limits, vector-space
   default-language: Haskell2010
 
 test-suite s2-geometry-test
