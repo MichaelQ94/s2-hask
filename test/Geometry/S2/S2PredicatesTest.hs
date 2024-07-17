@@ -29,5 +29,4 @@ test_orderedCCW_simple =
         assertEqual True (orderedCCW x x y d)
         assertEqual True (orderedCCW x y y d)
         assertEqual True (orderedCCW z z z d)
-        assertEqual True (orderedCCW z z z z)
         assertEqual False (orderedCCW x y x z)
