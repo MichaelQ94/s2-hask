@@ -3,6 +3,7 @@
 module Geometry.S2.S2LatLngTest (htf_thisModulesTests) where
 
 import Geometry.S2.S1Angle as S1Angle (fromDegrees, toDegrees, toRadians)
+import Geometry.S2.S2Generators ( normalizedS2Points )
 import Geometry.S2.S2LatLng as S2LatLng
   ( S2LatLng,
     fromDegrees,
@@ -18,8 +19,7 @@ import Geometry.S2.S2LatLng as S2LatLng
   )
 import Geometry.S2.S2Point as S2Point (S2Point, angleBetween, magnitude)
 import Test.Framework
-  ( Gen,
-    Property,
+  ( Property,
     TestSuite,
     assertEqual,
     forAll,
@@ -30,7 +30,6 @@ import Test.Framework
     qcAssertion,
     suchThat,
   )
-import Test.QuickCheck.Gen (choose, elements)
 
 prop_toRadians_fromRadians :: Double -> Double -> Bool
 prop_toRadians_fromRadians latRad lngRad =
@@ -105,14 +104,3 @@ assertInvalid latLng = assertEqual False (S2LatLng.isValid latLng)
 
 approxEqual :: S2Point -> S2Point -> Bool
 approxEqual a b = toRadians (S2Point.angleBetween a b) < 1E-15
-
-normalizedS2Points :: Gen S2Point
-normalizedS2Points = do
-  z <- choose (-1, 1)
-  let maxY = sqrt (1 - (z * z))
-  y <- choose (- maxY, maxY)
-  let absX = sqrt (1 - (z * z) - (y * y))
-  x <- elements [- absX, absX]
-  -- Balance the asymmetry of floating-point operations by randomly choosing one of the 6 valid
-  -- permutations of the coordinates.
-  elements [(x, y, z), (y, z, x), (z, x, y), (z, y, x), (y, x, z), (x, z, y)]

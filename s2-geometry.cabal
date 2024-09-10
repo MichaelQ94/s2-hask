@@ -43,6 +43,7 @@ test-suite s2-geometry-test
   other-modules:
     Geometry.S2.S1AngleTest,
     Geometry.S2.S2CellIdTest,
+    Geometry.S2.S2Generators,
     Geometry.S2.S2LatLngTest,
     Geometry.S2.S2LoopTest,
     Geometry.S2.S2PointTest,
