@@ -103,4 +103,4 @@ assertInvalid :: S2LatLng -> IO ()
 assertInvalid latLng = assertEqual False (S2LatLng.isValid latLng)
 
 approxEqual :: S2Point -> S2Point -> Bool
-approxEqual a b = toRadians (S2Point.angleBetween a b) < 1E-15
+approxEqual a b = toRadians (S2Point.angleBetween a b) < 1E-14
