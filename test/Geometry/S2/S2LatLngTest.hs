@@ -3,7 +3,7 @@
 module Geometry.S2.S2LatLngTest (htf_thisModulesTests) where
 
 import Geometry.S2.S1Angle as S1Angle (fromDegrees, toDegrees, toRadians)
-import Geometry.S2.S2Generators ( normalizedS2Points )
+import Geometry.S2.Testing.S2Generators ( normalizedS2Points )
 import Geometry.S2.S2LatLng as S2LatLng
   ( S2LatLng,
     fromDegrees,

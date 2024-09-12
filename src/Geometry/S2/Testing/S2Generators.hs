@@ -1,4 +1,4 @@
-module Geometry.S2.S2Generators where
+module Geometry.S2.Testing.S2Generators where
 
 import Geometry.S2.S2Point as S2Point (S2Point, normalized)
 import Test.Framework (Gen)

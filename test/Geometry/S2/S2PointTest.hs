@@ -3,7 +3,7 @@
 module Geometry.S2.S2PointTest (htf_thisModulesTests) where
 
 import Geometry.S2.S1Angle (toRadians)
-import Geometry.S2.S2Generators ( normalizedS2Points )
+import Geometry.S2.Testing.S2Generators ( normalizedS2Points )
 import Geometry.S2.S2Point as S2Point
     ( AdditiveGroup((^+^)),
       HasCross3(cross3),
