@@ -9,8 +9,8 @@ normalizedS2Points = do
   x2 <- choose (0, 1)
   y2 <- choose (0, 1 - x2)
   let absX = sqrt x2
-  let absY = sqrt y2
-  let absZ = sqrt (1 - x2 - y2)
+      absY = sqrt y2
+      absZ = sqrt (1 - x2 - y2)
   x <- elements [- absX, absX]
   y <- elements [- absY, absY]
   z <- elements [- absZ, absZ]
